@@ -151,6 +151,22 @@
     .navbar {
         height: 60px;
     }
+
+    .navbar .container {
+        position: relative;
+    }
+
+    .navbar.nav-open .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #0a1628;
+        padding: 10px 0;
+        z-index: 999;
+    }
 }
 
 /* ISSUE (Intermediate): Gap between 768px and 1024px — navbar links overflow */
