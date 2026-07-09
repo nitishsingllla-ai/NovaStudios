@@ -369,34 +369,34 @@
             const childCount = clampTicketValue(childTickets.value);
             adultTickets.value = adultCount;
             childTickets.value = childCount;
-            const selectedPrice = ticketPrices[selectedPark] || ticketPrices['Stardust Kingdom'];
-            const ticketPrice = (adultCount * selectedPrice.adult) + (childCount * selectedPrice.child);
-            const taxes = ticketPrice * 0.10;
-            const grandTotal = ticketPrice + taxes;
-            const totalTickets = adultCount + childCount;
 
             summaryPark.textContent = selectedPark;
             summaryDate.textContent = visitDate.value ? new Date(visitDate.value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Select a date';
             summaryAdults.textContent = adultCount;
             summaryChildren.textContent = childCount;
-            summaryTotal.textContent = totalTickets;
+            summaryTotal.textContent = adultCount + childCount;
+
+            const ticketPrice = (adultCount * ticketPrices[selectedPark].adult) + (childCount * ticketPrices[selectedPark].child);
+            const fees = ticketPrice * 0.10;
+            const grandTotal = ticketPrice + fees;
+
             summaryTicketPrice.textContent = formatCurrency(ticketPrice);
-            summaryFees.textContent = formatCurrency(taxes);
+            summaryFees.textContent = formatCurrency(fees);
             summaryGrandTotal.textContent = formatCurrency(grandTotal);
         }
 
         function showConfirmation(data) {
-            confirmationCard.classList.remove('hidden');
             confirmName.textContent = data.name;
             confirmPark.textContent = data.park;
             confirmDate.textContent = data.date;
             confirmTotal.textContent = data.totalTickets;
             confirmGrand.textContent = formatCurrency(data.grandTotal);
             reservationId.textContent = data.reservationId;
-            confirmationCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            confirmationCard.classList.remove('hidden');
+            confirmationCard.scrollIntoView({ behavior: 'smooth' });
         }
 
-        [themePark, visitDate, adultTickets, childTickets].forEach(function (element) {
+        [themePark, visitDate, adultTickets, childTickets].forEach(element => {
             element.addEventListener('input', updateSummary);
             element.addEventListener('change', updateSummary);
         });
@@ -464,5 +464,6 @@
 
         updateSummary();
     </script>
+    <script src="js/nav.js"></script>
 </body>
 </html>
