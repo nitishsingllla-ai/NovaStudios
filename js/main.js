@@ -16,6 +16,10 @@
             document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
         }
 
+        // Prevent duplicate script injection
+        if (window.i18nScriptsInjected) return;
+        window.i18nScriptsInjected = true;
+
         // Determine base path relative to main.js script source
         let basePath = '';
         if (document.currentScript) {

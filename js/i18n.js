@@ -1,4 +1,10 @@
 (function () {
+    // Ensure the i18n instance is initialized only once
+    if (window.i18nInitialized) return;
+    window.i18nInitialized = true;
+
+    let observer;
+
     // 1. Determine active language
     let activeLang = localStorage.getItem('lang');
     if (!activeLang) {
@@ -107,8 +113,8 @@
         }
     };
 
-    // Inject language switcher and initialize page translations on DOM interactive
-    document.addEventListener('DOMContentLoaded', () => {
+    // Function to inject language switcher dropdown
+    function injectLanguageSwitcher() {
         const navbarActions = document.querySelector('.navbar-actions');
         if (navbarActions) {
             // Check if switcher already exists to prevent duplicate injections
@@ -125,6 +131,7 @@
                 
                 // Bind change event
                 const select = langSelectWrapper.querySelector('select');
+                select.value = window.currentLang;
                 select.addEventListener('change', (e) => {
                     window.setLanguage(e.target.value);
                 });
@@ -136,8 +143,57 @@
                 }
             }
         }
-        
-        // Run initial translation
+    }
+
+    // Initialize switcher and run translations
+    const init = () => {
+        if (observer) {
+            observer.disconnect();
+        }
+
+        injectLanguageSwitcher();
         window.translatePage();
+
+        if (observer) {
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+    };
+
+    // Bootstrapping
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // Single Page App navigation support: listen for URL state changes
+    window.addEventListener('popstate', init);
+    window.addEventListener('hashchange', init);
+
+    // Support arbitrary route/content changes using a MutationObserver
+    observer = new MutationObserver((mutations) => {
+        let shouldInit = false;
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === 1) { // Element Node
+                    if (
+                        node.querySelector('[data-i18n], [data-i18n-html]') || 
+                        node.hasAttribute('data-i18n') || 
+                        node.hasAttribute('data-i18n-html') ||
+                        node.querySelector('.navbar-actions') ||
+                        node.classList.contains('navbar-actions')
+                    ) {
+                        shouldInit = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldInit) break;
+        }
+        if (shouldInit) {
+            init();
+        }
     });
+
+    observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
