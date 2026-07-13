@@ -10,6 +10,9 @@
     box-shadow: var(--card-shadow);
     border: 1px solid var(--card-border);
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .card:hover {
@@ -52,6 +55,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: auto;
 }
 
 /* Card Grid */
