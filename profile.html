@@ -172,6 +172,7 @@
                         <a href="#account-details">Account Details</a>
                         <a href="#watch-history">Watch History</a>
                         <a href="#favorites">Favorites</a>
+                        <a href="#" id="logout-link" style="color: #ef4444; margin-top: 16px; border-top: 1px solid #e5e7eb; padding-top: 12px; font-weight: 500;">Log Out</a>
                     </aside>
 
                     <div>
@@ -235,7 +236,7 @@
     </footer>
 
     <script src="js/nav.js"></script>
-        <script>
+            <script>
         (function () {
             // Get the user's logged-in session details
             var sessionData = sessionStorage.getItem('novaPlusSession');
@@ -255,6 +256,19 @@
                 }
             }
 
+            // 3. Log Out button logic
+            var logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Clear the logged-in session
+                    sessionStorage.removeItem('novaPlusSession');
+                    alert('You have been logged out successfully!');
+                    // Redirect back to the homepage
+                    window.location.href = 'index.html';
+                });
+            }
+
             // Keep the form submit behavior
             var form = document.getElementById('profile-form');
             var status = document.getElementById('profile-status');
@@ -264,7 +278,4 @@
             });
         })();
     </script>
-
-
-
 </body></html>
