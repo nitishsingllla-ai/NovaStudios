@@ -2,13 +2,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
     const signupForm = document.getElementById("signupForm");
     const toggle =
-    document.getElementById("togglePassword") ||
-    document.getElementById("signupPasswordToggle");
+        document.getElementById("togglePassword") ||
+        document.getElementById("signupPasswordToggle");
     const createLink = document.getElementById("createAccountLink");
-
-    const passwordInput =
-        document.getElementById("password") ||
-        document.getElementById("signupPassword");
+    const signupPasswordInput = document.getElementById("signupPassword");
+    const signInBtn = document.querySelector(".sign-in-button");
+    const passwordFieldWrapper = document.querySelector(".password-field");
 
     if (createLink) {
         createLink.addEventListener("click", function (event) {
@@ -17,11 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    if (toggle && passwordInput) {
+    if (toggle && signupPasswordInput) {
         toggle.addEventListener("click", function () {
-            const isHidden = passwordInput.type === "password";
-
-            passwordInput.type = isHidden ? "text" : "password";
+            const isHidden = signupPasswordInput.type === "password";
+            signupPasswordInput.type = isHidden ? "text" : "password";
             toggle.textContent = isHidden ? "Hide" : "Show";
         });
     }
@@ -40,14 +38,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 .value
                 .trim();
 
-            const pass = document
-                .getElementById("signupPassword")
-                .value;
+            const pass = signupPasswordInput
+                ? signupPasswordInput.value
+                : "";
 
             if (!name || !email || pass.length < 6) {
                 alert(
                     "Fill all fields. Password must be at least 6 characters."
                 );
+                return;
+            }
+
+            const isWeakPassword =
+                !/[A-Z]/.test(pass) ||
+                !/[!@#$%^&*(),.?":{}|<>]/.test(pass);
+
+            if (isWeakPassword) {
+                alert("Enter a strong password before creating an account.");
                 return;
             }
 
@@ -63,8 +70,25 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             alert("Account created successfully!");
-
             window.location.href = "login.html";
+        });
+    }
+
+    if (signupPasswordInput && passwordFieldWrapper) {
+        const errorMsg = document.createElement("p");
+        errorMsg.textContent =
+            "Password must contain at least one uppercase letter and one special character.";
+        errorMsg.style.color = "red";
+        errorMsg.style.display = "none";
+        errorMsg.style.marginTop = "0.25rem";
+        passwordFieldWrapper.appendChild(errorMsg);
+
+        signupPasswordInput.addEventListener("input", () => {
+            const hasError =
+                !/[A-Z]/.test(signupPasswordInput.value) ||
+                !/[!@#$%^&*(),.?":{}|<>]/.test(signupPasswordInput.value);
+            errorMsg.style.display = hasError ? "block" : "none";
+            if (signInBtn) signInBtn.disabled = false;
         });
     }
 
@@ -99,7 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     error.textContent =
                         "Invalid email or password.";
                 }
-
                 return;
             }
 
@@ -116,21 +139,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
-        const passwordInput = document.getElementById("signupPassword");
-        const signupForm = document.querySelector(".password-field");
-        
-        const errorMsg = document.createElement("p");
-        errorMsg.textContent = "Password must contain at least one uppercase letter and one special character.";
-        errorMsg.style.color = "red";
-        errorMsg.style.display = "none";
-        errorMsg.style.marginTop = "0.25rem";
-        signupForm.appendChild(errorMsg);
-
-        passwordInput.addEventListener("input", () => {
-            if (!/[A-Z]/.test(passwordInput.value) || !/[!@#$%^&*(),.?":{}|<>]/.test(passwordInput.value)) {
-                errorMsg.style.display = "block";
-            } else {
-                errorMsg.style.display = "none";
-            }
-        });
