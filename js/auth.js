@@ -116,3 +116,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+        const passwordInput = document.getElementById("signupPassword");
+        const signupForm = document.querySelector(".password-field");
+        
+        const errorMsg = document.createElement("p");
+        errorMsg.textContent = "Password must contain at least one uppercase letter and one special character.";
+        errorMsg.style.color = "red";
+        errorMsg.style.display = "none";
+        errorMsg.style.marginTop = "0.25rem";
+        signupForm.appendChild(errorMsg);
+
+        passwordInput.addEventListener("input", () => {
+            if (!/[A-Z]/.test(passwordInput.value) || !/[!@#$%^&*(),.?":{}|<>]/.test(passwordInput.value)) {
+                errorMsg.style.display = "block";
+            } else {
+                errorMsg.style.display = "none";
+            }
+        });
